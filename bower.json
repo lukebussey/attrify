@@ -1,13 +1,18 @@
 {
-  "name": "last-campaign",
-  "description": "Saves campaign query string parameters into a session cookie so they can be retrieved and passed to your marketing automation system when needed.",
-  "main": "dist/last-campaign.js",
+  "name": "attrify",
+  "description": "Saves the initial referrer and campaign (utm) query string parameters for a user into a cookie as well as last referrer and campaign (utm) query string parameters into a session cookie. The cookies can then be passed to your marketing automation or email marketing system at any time during the users session for marketing attribution.",
+  "main": "dist/attrify.js",
   "authors": [
-    "Luke Bussey <luke@yesware.com>"
+    "Luke Bussey <luke.bussey@gmail.com>"
   ],
   "license": "MIT",
   "keywords": [
+    "attribution",
+    "marketing",
+    "automation",
+    "segment",
     "campaign",
+    "referrer",
     "utm",
     "utm_campaign",
     "utm_source",
@@ -18,10 +23,10 @@
   "moduleType": [
     "globals"
   ],
-  "homepage": "https://github.com/Yesware/last-campaign",
+  "homepage": "https://github.com/lukebussey/attrify",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Yesware/last-campaign.git"
+    "url": "git://github.com/lukebussey/attrify.git"
   },
   "ignore": [
     "index.js",

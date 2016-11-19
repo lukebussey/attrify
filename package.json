@@ -1,22 +1,22 @@
 {
-  "name": "last-campaign",
-  "version": "2.0.0",
-  "description": "Saves campaign query string parameters into a session cookie so they can be retrieved and passed to your marketing automation system when needed.",
-  "homepage": "https://github.com/Yesware/last-campaign",
+  "name": "attrify",
+  "version": "1.0.0",
+  "description": "Attrify saves a user's initial-and-last, referrer and campaign (utm) query string parameters as cookies. Initial values are saved for ever and last are persisted for the length of the users browsing session. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.",
+  "homepage": "https://github.com/lukebussey/attrify",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Yesware/last-campaign.git"
+    "url": "git://github.com/lukebussey/attrify.git"
   },
   "main": "index.js",
   "scripts": {
     "prepublish": "npm run build && npm run minify",
-    "build": "browserify --standalone lastCampaign index.js -o dist/last-campaign.js",
-    "watch": "watchify --standalone lastCampaign index.js -o dist/last-campaign.js",
-    "minify": "uglifyjs dist/last-campaign.js -o dist/last-campaign.min.js",
+    "build": "browserify --standalone attrify index.js -o dist/attrify.js",
+    "watch": "watchify --standalone attrify index.js -o dist/attrify.js",
+    "minify": "uglifyjs dist/attrify.js -o dist/attrify.min.js",
     "test": "jshint index.js && mocha"
   },
   "authors": [
-    "Luke Bussey <luke@yesware.com>"
+    "Luke Bussey <luke.bussey@gmail.com>"
   ],
   "keywords": [
     "campaign",
@@ -29,8 +29,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "cookie": "^0.2.3",
-    "deepmerge": "^0.2.10",
+    "cookie": "^0.3.1",
+    "deepmerge": "^1.3.0",
     "querystring": "^0.2.0"
   },
   "devDependencies": {
