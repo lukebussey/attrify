@@ -15,7 +15,7 @@ Attrify is a fork and improvement of my previous project [Last Campaign](https:/
 ### NPM
 `$ npm install attrify --save` OR `$ yarn add attrify`
 
-```
+```js
 var attrify = require('attrify');
 attrify();
 ```
@@ -23,7 +23,7 @@ attrify();
 ### Bower
 `$ bower install attrify`
 
-```
+```js
 attrify();
 ```
 

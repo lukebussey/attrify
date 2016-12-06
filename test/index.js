@@ -2,7 +2,6 @@ var expect = require('chai').expect;
 var jsdom = require('jsdom').jsdom;
 var cookie = require('cookie');
 var attrify = require('..');
-var encodedReferrer = '';
 
 var cookieData = {};
 
@@ -14,20 +13,30 @@ beforeEach(function () {
   });
   global.window = global.document.defaultView;
 
-  encodedReferrer = encodeURIComponent('https://www.google.com');
-
 });
 
 describe('attrify', function () {
-  it('should set a referrer cookie by default', function () {
+  it('should set the correct cookies by default', function () {
 
     attrify();
 
     cookieData = cookie.parse(document.cookie);
 
-    expect(cookieData).to.have.all.keys('initial_referrer', 'referrer');
+    expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
+                                        'initial_utm_campaign',
+                                        'initial_utm_medium',
+                                        'initial_utm_source',
+                                        'initial_utm_term',
+                                        'initial_utm_content');
+
     expect(cookieData.initial_referrer).to.equal('https://www.google.com');
     expect(cookieData.referrer).to.equal('https://www.google.com');
+    expect(cookieData.initial_utm_campaign).to.equal('null');
+    expect(cookieData.initial_utm_medium).to.equal('null');
+    expect(cookieData.initial_utm_source).to.equal('null');
+    expect(cookieData.initial_utm_content).to.equal('null');
+    expect(cookieData.initial_utm_term).to.equal('null');
+
   });
 
   describe('with a query string', function () {

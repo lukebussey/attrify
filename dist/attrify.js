@@ -97,40 +97,39 @@ function attribution(opts) {
 
   // Parse the query string
   if (pageQueryString.length !== 0) {
-
     data = querystring.parse(pageQueryString);
-
-    // Create initial cookies
-    options.params.forEach(function (key) {
-      if (data[key] && !getCookie(options.prefix + options.initialPrefix + key)) {
-
-        setCookie(options.prefix + options.initialPrefix + key, data[key], merge(cookieOptions, {
-          expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
-        }));
-
-      }
-    });
-
-    // Create the cookies
-    var removed = false;
-
-    options.params.forEach(function (key) {
-      if (data[key]) {
-
-        // param found in querystring so remove all necessary existing cookies first
-        if (!removed) {
-          removeCookies(options, cookieOptions);
-          removed = true;
-        }
-
-        // Merge expires in to prevent the following error:
-        // Uncaught TypeError: opt.expires.toUTCString is not a function
-        setCookie(options.prefix + options.lastPrefix + key, data[key], merge(cookieOptions, {
-          expires: expires
-        }));
-      }
-    });
   }
+
+  // Create initial cookies
+  options.params.forEach(function (key) {
+    if (!getCookie(options.prefix + options.initialPrefix + key)) {
+
+      setCookie(options.prefix + options.initialPrefix + key, data[key] || 'null', merge(cookieOptions, {
+        expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
+      }));
+
+    }
+  });
+
+  // Create the cookies
+  var removed = false;
+
+  options.params.forEach(function (key) {
+    if (data[key]) {
+
+      // param found in querystring so remove all necessary existing cookies first
+      if (!removed) {
+        removeCookies(options, cookieOptions);
+        removed = true;
+      }
+
+      // Merge expires in to prevent the following error:
+      // Uncaught TypeError: opt.expires.toUTCString is not a function
+      setCookie(options.prefix + options.lastPrefix + key, data[key], merge(cookieOptions, {
+        expires: expires
+      }));
+    }
+  });
 
   // Save the data object
   if (dataKeys.length !== 0) {
