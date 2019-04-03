@@ -1,6 +1,6 @@
 # Attrify for Marketing Attribution
 
-Attrify saves a user's initial-and-last, referrer and campaign (utm) query string parameters as cookies. Initial values are saved for ever and last are persisted for the length of the users browsing session. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.
+Attrify saves a user's initial-and-last, referrer and campaign (utm) query string parameters as cookies. Initial values are saved forever and last are persisted for the length of the users browsing session. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.
 
 By default, only the `initial_referrer` `initial_utm_campaign`, `initial_utm_source`, `initial_utm_medium`, `initial_utm_content`, and `initial_utm_term`, `referrer` `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and `utm_term` are saved. Extra query string parameters can also be saved by passing them in via the `options.params` object. If the query string contains any of the parameters to be saved, a new session is assumed and previously set cookies will be overwritten. Initial value cookies are not overwritten at any time.
 
@@ -13,17 +13,10 @@ Attrify is a fork and improvement of my previous project [Last Campaign](https:/
 ## Installation & Usage
 
 ### NPM
-`$ npm install @loganbussey/attrify` OR `$ yarn add @loganbussey/attrify`
+`$ npm install attrify --save`
 
 ```js
-var attrify = require('attrify');
-attrify();
-```
-
-### Bower
-`$ bower install attrify`
-
-```js
+import attrify from 'attrify';
 attrify();
 ```
 
@@ -76,31 +69,31 @@ Default `/`
 ### Save `gclid` AdWords ID in addition to default parameters
 ```
 attrify({
-    params: ['gclid']
+  params: ['gclid']
 });
 ```
 
 ### Save only the `foo` parameter with an `_` prefix
 ```
 attrify({
-    prefix: '_',
-    defaults: false,
-    params: ['foo']
+  prefix: '_',
+  defaults: false,
+  params: ['foo']
 });
 ```
 
 ### Save `foo` value in addition to default parameters
 ```
 attrify({
-    data: {
-        foo: 'bar'
-    }
+  data: {
+    foo: 'bar'
+  }
 });
 ```
 
 ## MIT License
 
-Copyright © 2016 Luke Bussey
+Copyright © 2019 Logan Bussey, LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
