@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "eslint index.js",
-    "test": "mocha"
+    "test": "npm run lint && mocha"
   },
   "authors": [
     "Luke Bussey <luke@loganbussey.com>"
