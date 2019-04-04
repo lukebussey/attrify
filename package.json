@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint": "eslint index.js",
-    "test": "npm run lint && mocha"
+    "test": "npm run lint && mocha --require esm"
   },
   "authors": [
     "Luke Bussey <luke@loganbussey.com>"
@@ -30,15 +30,16 @@
   "license": "MIT",
   "dependencies": {
     "cookie": "^0.3.1",
-    "deepmerge": "^1.5.2",
+    "deepmerge": "^3.2.0",
     "querystring": "^0.2.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
+    "esm": "^3.2.22",
     "jsdom": "^7.2.2",
-    "mocha": "^2.5.3"
+    "mocha": "^6.0.2"
   }
 }

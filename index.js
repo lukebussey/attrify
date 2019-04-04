@@ -1,17 +1,6 @@
-const querystring = require('querystring');
-const cookie = require('cookie');
-const merge = require('deepmerge');
-
-/**
- * Module exports.
- * @public
- */
-module.exports = attribution;
-
-/**
- * Module variables.
- * @private
- */
+import querystring from 'querystring';
+import cookie from 'cookie';
+import merge from 'deepmerge';
 
 const decode = decodeURIComponent;
 
@@ -27,7 +16,7 @@ const decode = decodeURIComponent;
  * @param {array}  [opts.extra]  Extra parameters.
  * @public
  */
-function attribution(opts) {
+const attribution = (opts) => {
   let options = {
     defaults: true,
     prefix: '',
@@ -41,7 +30,7 @@ function attribution(opts) {
       'utm_content',
     ],
     data: {
-      referrer: document.referrer !== '' ? document.referrer : 'direct',
+      referrer: global.document.referrer !== '' ? global.document.referrer : 'direct',
     },
     path: '/',
     domain: null,
@@ -62,7 +51,7 @@ function attribution(opts) {
   }
 
   // Merge opts onto options
-  if (arguments.length && typeof opts === 'object') {
+  if (typeof opts === 'object') {
     options = merge(options, opts);
   }
 
@@ -147,20 +136,20 @@ function attribution(opts) {
       }
     });
   }
-}
+};
 
 /**
  * Remove all cookies matching options.params
  * @param  {Object} options
  * @private
  */
-function removeCookies(options, cookieOptions) {
+const removeCookies = (options, cookieOptions) => {
   options.params.forEach((key) => {
-    document.cookie = cookie.serialize(options.prefix + options.lastPrefix + key, '', merge(cookieOptions, {
+    global.document.cookie = cookie.serialize(options.prefix + options.lastPrefix + key, '', merge(cookieOptions, {
       expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT'),
     }));
   });
-}
+};
 
 /**
  * Returns the query string without its initial question mark.
@@ -170,9 +159,7 @@ function removeCookies(options, cookieOptions) {
  * @return {string}
  * @private
  */
-function getQueryString() {
-  return window.location.search.substring(1);
-}
+const getQueryString = () => global.window.location.search.substring(1);
 
 /**
  * Sets a browser cookie given a valid cookie string.
@@ -184,9 +171,9 @@ function getQueryString() {
  * @param {object} options - object containing cookie options
  * @private
  */
-function setCookie(name, value, options) {
-  document.cookie = cookie.serialize(name, value, options);
-}
+const setCookie = (name, value, options) => {
+  global.document.cookie = cookie.serialize(name, value, options);
+};
 
 /**
  * Returns cookie value
@@ -195,18 +182,14 @@ function setCookie(name, value, options) {
  * @return {string} token
  * @private
  */
-function getCookie(name) {
-  if (arguments.length === 0 && typeof opts !== 'string') {
-    return null;
-  }
-
-  const match = document.cookie.match(`(?:^|; )${name}=([^;]+)`);
+const getCookie = (name) => {
+  const match = global.document.cookie.match(`(?:^|; )${name}=([^;]+)`);
 
   if (match) {
     return decode(match[1]);
   }
   return null;
-}
+};
 
 /**
  * Update cookie expiration
@@ -216,7 +199,7 @@ function getCookie(name) {
  * @param {object} options - object containing cookie options
  * @private
  */
-function updateExpiration(name, expires, options) {
+const updateExpiration = (name, expires, options) => {
   const existingValue = getCookie(name);
 
   if (existingValue) {
@@ -224,4 +207,6 @@ function updateExpiration(name, expires, options) {
       expires,
     }));
   }
-}
+};
+
+export default attribution;

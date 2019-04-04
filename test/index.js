@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const { jsdom } = require('jsdom');
-const cookie = require('cookie');
-const attrify = require('..');
+import {expect} from 'chai';
+import {jsdom} from 'jsdom';
+import cookie from 'cookie';
+import attrify from '../index.js';
 
 let cookieData = {};
 
