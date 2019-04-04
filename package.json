@@ -1,6 +1,6 @@
 {
-  "name": "attrify",
-  "version": "1.0.1",
+  "name": "@loganbussey/attrify",
+  "version": "1.0.2",
   "description": "Attrify saves a user's initial-and-last, referrer and campaign (utm) query string parameters as cookies. Initial values are saved for ever and last are persisted for the length of the users browsing session. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.",
   "homepage": "https://github.com/lukebussey/attrify",
   "repository": {
