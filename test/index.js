@@ -39,6 +39,33 @@ describe('attrify', function () {
 
   });
 
+  it('should not set initial cookies if specified', function () {
+
+    attrify({
+      saveInitial: false
+    });
+
+    cookieData = cookie.parse(document.cookie);
+
+    expect(cookieData).to.have.all.keys('referrer');
+
+    expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                        'initial_utm_campaign',
+                                        'initial_utm_medium',
+                                        'initial_utm_source',
+                                        'initial_utm_term',
+                                        'initial_utm_content');
+
+    expect(cookieData.initial_referrer).to.not.equal('https://www.google.com');
+    expect(cookieData.referrer).to.equal('https://www.google.com');
+    expect(cookieData.initial_utm_campaign).to.not.equal('null');
+    expect(cookieData.initial_utm_medium).to.not.equal('null');
+    expect(cookieData.initial_utm_source).to.not.equal('null');
+    expect(cookieData.initial_utm_content).to.not.equal('null');
+    expect(cookieData.initial_utm_term).to.not.equal('null');
+
+  });
+
   describe('with a query string', function () {
 
     beforeEach(function () {

@@ -34,6 +34,7 @@ function attribution(opts) {
   var options = {
     defaults: true,
     prefix: '',
+    saveInitial: true,
     initialPrefix: 'initial_',
     lastPrefix: '',
     params: [
@@ -100,15 +101,17 @@ function attribution(opts) {
   }
 
   // Create initial cookies
-  options.params.forEach(function (key) {
-    if (!getCookie(options.prefix + options.initialPrefix + key)) {
+  if (options.saveInitial) {
+    options.params.forEach(function (key) {
+      if (!getCookie(options.prefix + options.initialPrefix + key)) {
 
-      setCookie(options.prefix + options.initialPrefix + key, data[key] || 'null', merge(cookieOptions, {
-        expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
-      }));
+        setCookie(options.prefix + options.initialPrefix + key, data[key] || 'null', merge(cookieOptions, {
+          expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
+        }));
 
-    }
-  });
+      }
+    });
+  }
 
   // Create the cookies
   var removed = false;
@@ -140,10 +143,12 @@ function attribution(opts) {
       }
 
       // Create initial cookies
-      if (!getCookie(options.prefix + options.initialPrefix + key)) {
-        setCookie(options.prefix + options.initialPrefix + key, options.data[key], merge(cookieOptions, {
-          expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
-        }));
+      if (options.saveInitial) {
+        if (!getCookie(options.prefix + options.initialPrefix + key)) {
+          setCookie(options.prefix + options.initialPrefix + key, options.data[key], merge(cookieOptions, {
+            expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
+          }));
+        }
       }
 
       // Create session cookies if they don't exist
