@@ -34,7 +34,7 @@ Global cookie name prefix. Default `''`
 
 ### `saveInitial` (Boolean)
 
-Save persistent initial cookies. Setting this to `false` will omit the creation of all `initial_` cookies. Default `true`
+Save persistent initial cookies. Setting this to `true` will create all persistent `initial_` prefixed cookies. Default `false`
 
 ### `initialPrefix` (String)
 

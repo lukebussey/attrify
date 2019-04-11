@@ -20,7 +20,7 @@ const attribution = (opts) => {
   let options = {
     defaults: true,
     prefix: '',
-    saveInitial: true,
+    saveInitial: false,
     initialPrefix: 'initial_',
     lastPrefix: '',
     params: [
