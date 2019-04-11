@@ -32,6 +32,10 @@ Passing in `null` will disable the session timeout and revert to using a session
 
 Global cookie name prefix. Default `''`
 
+### `saveInitial` (Boolean)
+
+Save persistent initial cookies. Setting this to `false` will omit the creation of all `initial_` cookies. Default `true`
+
 ### `initialPrefix` (String)
 
 Initial cookie name prefix. Default `'initial_'`
