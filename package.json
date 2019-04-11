@@ -7,12 +7,11 @@
     "type": "git",
     "url": "git://github.com/loganbussey/attrify.git"
   },
-  "main": "index.js",
-  "files": [
-    "index.js"
-  ],
+  "main": "dist/index.js",
+  "module": "src/index.js",
   "scripts": {
-    "lint": "eslint index.js",
+    "prepare": "babel src --out-dir dist --presets=@babel/preset-env",
+    "lint": "eslint src/index.js",
     "test": "npm run lint && mocha --require esm"
   },
   "authors": [
@@ -34,12 +33,15 @@
     "querystring": "^0.2.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
     "esm": "^3.2.22",
     "jsdom": "^7.2.2",
-    "mocha": "^6.0.2"
+    "mocha": "^6.1.2"
   }
 }

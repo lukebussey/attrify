@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {jsdom} from 'jsdom';
 import cookie from 'cookie';
-import attrify from '../index.js';
+import attrify from '../src/index.js';
 
 let cookieData = {};
 
