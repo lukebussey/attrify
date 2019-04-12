@@ -1,24 +1,11 @@
-'use strict';
+import querystring from 'querystring';
+import cookie from 'cookie';
+import merge from 'deepmerge';
 
-var querystring = require('querystring');
-var cookie = require('cookie');
-var merge = require('deepmerge');
-
-/**
- * Module exports.
- * @public
- */
-module.exports = attribution;
+const decode = decodeURIComponent;
 
 /**
- * Module variables.
- * @private
- */
-
-var decode = decodeURIComponent;
-
-/**
- * saveLastCampaign
+ * attribution
  *
  * Saves campaign query string parameters into a session cookie so they can be
  * retrieved and passed to your marketing automation system when needed.
@@ -29,12 +16,11 @@ var decode = decodeURIComponent;
  * @param {array}  [opts.extra]  Extra parameters.
  * @public
  */
-function attribution(opts) {
-
-  var options = {
+const attribution = (opts) => {
+  let options = {
     defaults: true,
     prefix: '',
-    saveInitial: true,
+    saveInitial: false,
     initialPrefix: 'initial_',
     lastPrefix: '',
     params: [
@@ -42,21 +28,21 @@ function attribution(opts) {
       'utm_source',
       'utm_medium',
       'utm_term',
-      'utm_content'
+      'utm_content',
     ],
     data: {
-      referrer: document.referrer !== '' ? document.referrer : 'direct'
+      referrer: global.document.referrer !== '' ? global.document.referrer : 'direct',
     },
     path: '/',
     domain: null,
-    timeout: 30
+    timeout: 30,
   };
 
-  var pageQueryString = getQueryString();
-  var data = {};
-  var cookieOptions = {};
-  var now = new Date();
-  var expires;
+  const pageQueryString = getQueryString();
+  let data = {};
+  let cookieOptions = {};
+  const now = new Date();
+  let expires;
 
   // Remove default parameters if necessary
   if (typeof opts === 'object') {
@@ -66,16 +52,16 @@ function attribution(opts) {
   }
 
   // Merge opts onto options
-  if (arguments.length && typeof opts === 'object') {
+  if (typeof opts === 'object') {
     options = merge(options, opts);
   }
 
-  var dataKeys = Object.keys(options.data);
+  const dataKeys = Object.keys(options.data);
 
   // Set default cookie options
   cookieOptions = {
     domain: options.domain,
-    path: options.path
+    path: options.path,
   };
 
   // Set cookie expiration and advance expiration for existing cookies
@@ -83,13 +69,13 @@ function attribution(opts) {
     expires = new Date(now.setMinutes(now.getMinutes() + options.timeout));
 
     // querystring param cookies
-    options.params.forEach(function (key) {
+    options.params.forEach((key) => {
       updateExpiration(options.prefix + options.lastPrefix + key, expires, cookieOptions);
     });
 
     // data object cookies
     if (dataKeys.length !== 0) {
-      dataKeys.forEach(function (key) {
+      dataKeys.forEach((key) => {
         updateExpiration(options.prefix + options.lastPrefix + key, expires, cookieOptions);
       });
     }
@@ -102,23 +88,20 @@ function attribution(opts) {
 
   // Create initial cookies
   if (options.saveInitial) {
-    options.params.forEach(function (key) {
+    options.params.forEach((key) => {
       if (!getCookie(options.prefix + options.initialPrefix + key)) {
-
         setCookie(options.prefix + options.initialPrefix + key, data[key] || 'null', merge(cookieOptions, {
-          expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
+          expires: new Date('Tue 19 Jan 2038 03:14:07 GMT'),
         }));
-
       }
     });
   }
 
   // Create the cookies
-  var removed = false;
+  let removed = false;
 
-  options.params.forEach(function (key) {
+  options.params.forEach((key) => {
     if (data[key]) {
-
       // param found in querystring so remove all necessary existing cookies first
       if (!removed) {
         removeCookies(options, cookieOptions);
@@ -128,15 +111,14 @@ function attribution(opts) {
       // Merge expires in to prevent the following error:
       // Uncaught TypeError: opt.expires.toUTCString is not a function
       setCookie(options.prefix + options.lastPrefix + key, data[key], merge(cookieOptions, {
-        expires: expires
+        expires,
       }));
     }
   });
 
   // Save the data object
   if (dataKeys.length !== 0) {
-    dataKeys.forEach(function (key) {
-
+    dataKeys.forEach((key) => {
       // Skip undefined, null, or empty values
       if (typeof options.data[key] === 'undefined' || options.data[key] === null || options.data[key] === '') {
         return;
@@ -146,7 +128,7 @@ function attribution(opts) {
       if (options.saveInitial) {
         if (!getCookie(options.prefix + options.initialPrefix + key)) {
           setCookie(options.prefix + options.initialPrefix + key, options.data[key], merge(cookieOptions, {
-            expires: new Date('Tue 19 Jan 2038 03:14:07 GMT')
+            expires: new Date('Tue 19 Jan 2038 03:14:07 GMT'),
           }));
         }
       }
@@ -154,26 +136,25 @@ function attribution(opts) {
       // Create session cookies if they don't exist
       if (!getCookie(options.prefix + options.lastPrefix + key)) {
         setCookie(options.prefix + options.lastPrefix + key, options.data[key], merge(cookieOptions, {
-          expires: expires
+          expires,
         }));
       }
     });
   }
-
-}
+};
 
 /**
  * Remove all cookies matching options.params
  * @param  {Object} options
  * @private
  */
-function removeCookies(options, cookieOptions) {
-  options.params.forEach(function (key) {
-    document.cookie = cookie.serialize(options.prefix + options.lastPrefix + key, '', merge(cookieOptions, {
-      expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT')
+const removeCookies = (options, cookieOptions) => {
+  options.params.forEach((key) => {
+    global.document.cookie = cookie.serialize(options.prefix + options.lastPrefix + key, '', merge(cookieOptions, {
+      expires: new Date('Thu, 01 Jan 1970 00:00:00 GMT'),
     }));
   });
-}
+};
 
 /**
  * Returns the query string without its initial question mark.
@@ -183,9 +164,7 @@ function removeCookies(options, cookieOptions) {
  * @return {string}
  * @private
  */
-function getQueryString() {
-  return window.location.search.substring(1);
-}
+const getQueryString = () => global.window.location.search.substring(1);
 
 /**
  * Sets a browser cookie given a valid cookie string.
@@ -197,9 +176,9 @@ function getQueryString() {
  * @param {object} options - object containing cookie options
  * @private
  */
-function setCookie(name, value, options) {
-  document.cookie = cookie.serialize(name, value, options);
-}
+const setCookie = (name, value, options) => {
+  global.document.cookie = cookie.serialize(name, value, options);
+};
 
 /**
  * Returns cookie value
@@ -208,19 +187,14 @@ function setCookie(name, value, options) {
  * @return {string} token
  * @private
  */
-function getCookie(name) {
-  if (arguments.length === 0 && typeof opts !== 'string') {
-    return;
-  }
-
-  var match = document.cookie.match('(?:^|; )' + name + '=([^;]+)');
+const getCookie = (name) => {
+  const match = global.document.cookie.match(`(?:^|; )${name}=([^;]+)`);
 
   if (match) {
     return decode(match[1]);
-  } else {
-    return '';
   }
-}
+  return null;
+};
 
 /**
  * Update cookie expiration
@@ -230,12 +204,14 @@ function getCookie(name) {
  * @param {object} options - object containing cookie options
  * @private
  */
-function updateExpiration(name, expires, options) {
-  var existingValue = getCookie(name);
+const updateExpiration = (name, expires, options) => {
+  const existingValue = getCookie(name);
 
   if (existingValue) {
     setCookie(name, existingValue, merge(options, {
-      expires: expires
+      expires,
     }));
   }
-}
+};
+
+export default attribution;

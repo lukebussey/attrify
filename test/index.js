@@ -1,28 +1,45 @@
-var expect = require('chai').expect;
-var jsdom = require('jsdom').jsdom;
-var cookie = require('cookie');
-var attrify = require('..');
+import {expect} from 'chai';
+import {jsdom} from 'jsdom';
+import cookie from 'cookie';
+import attrify from '../src/index.js';
 
-var cookieData = {};
+let cookieData = {};
 
-beforeEach(function () {
-
+beforeEach(() => {
   global.document = jsdom('', {
     url: 'http://www.lukebussey.com/',
-    referrer: 'https://www.google.com'
+    referrer: 'https://www.google.com',
   });
   global.window = global.document.defaultView;
-
 });
 
-describe('attrify', function () {
-  it('should set the correct cookies by default', function () {
-
+describe('attrify', () => {
+  it('should set the correct cookies by default', () => {
     attrify();
 
     cookieData = cookie.parse(document.cookie);
 
-    expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
+    expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                            'initial_utm_campaign',
+                                            'initial_utm_medium',
+                                            'initial_utm_source',
+                                            'initial_utm_term',
+                                            'initial_utm_content');
+
+    expect(cookieData.referrer).to.equal('https://www.google.com');
+
+  });
+
+  it('should set initial cookies if specified', () => {
+
+    attrify({
+      saveInitial: true
+    });
+
+    cookieData = cookie.parse(document.cookie);
+
+    expect(cookieData).to.have.all.keys('referrer',
+                                        'initial_referrer',
                                         'initial_utm_campaign',
                                         'initial_utm_medium',
                                         'initial_utm_source',
@@ -39,307 +56,288 @@ describe('attrify', function () {
 
   });
 
-  it('should not set initial cookies if specified', function () {
-
-    attrify({
-      saveInitial: false
-    });
-
-    cookieData = cookie.parse(document.cookie);
-
-    expect(cookieData).to.have.all.keys('referrer');
-
-    expect(cookieData).to.not.have.all.keys('initial_referrer',
-                                        'initial_utm_campaign',
-                                        'initial_utm_medium',
-                                        'initial_utm_source',
-                                        'initial_utm_term',
-                                        'initial_utm_content');
-
-    expect(cookieData.initial_referrer).to.not.equal('https://www.google.com');
-    expect(cookieData.referrer).to.equal('https://www.google.com');
-    expect(cookieData.initial_utm_campaign).to.not.equal('null');
-    expect(cookieData.initial_utm_medium).to.not.equal('null');
-    expect(cookieData.initial_utm_source).to.not.equal('null');
-    expect(cookieData.initial_utm_content).to.not.equal('null');
-    expect(cookieData.initial_utm_term).to.not.equal('null');
-
-  });
-
-  describe('with a query string', function () {
-
-    beforeEach(function () {
+  describe('with a query string', () => {
+    beforeEach(() => {
       window.location.href = '/path/?foo=bar&utm_campaign=test&utm_medium=test&utm_source=test&utm_term=test&utm_content=test';
     });
 
-    it('should only set the correct cookies', function () {
-
+    it('should only set the correct cookies', () => {
       attrify();
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_utm_term', 'utm_term',
-                                          'initial_utm_content', 'utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_campaign).to.equal('test');
       expect(cookieData.utm_campaign).to.equal('test');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-      expect(cookieData.initial_utm_content).to.equal('test');
       expect(cookieData.utm_content).to.equal('test');
-      expect(cookieData.initial_utm_term).to.equal('test');
       expect(cookieData.utm_term).to.equal('test');
-
     });
 
-    it('should only set the specified cookies', function () {
-
+    it('should only set the specified cookies', () => {
       attrify({
         defaults: false,
-        params: ['utm_source', 'utm_medium']
+        params: ['utm_source', 'utm_medium'],
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source');
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_medium',
+                                          'utm_source');
+
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-
     });
 
-    it('should set specified extra cookies', function () {
-
+    it('should set specified extra cookies', () => {
       attrify({
-        params: ['foo']
+        params: ['foo'],
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_utm_term', 'utm_term',
-                                          'initial_utm_content', 'utm_content',
-                                          'initial_foo', 'foo');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content',
+                                          'foo');
+
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_campaign).to.equal('test');
       expect(cookieData.utm_campaign).to.equal('test');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-      expect(cookieData.initial_utm_content).to.equal('test');
       expect(cookieData.utm_content).to.equal('test');
-      expect(cookieData.initial_utm_term).to.equal('test');
       expect(cookieData.utm_term).to.equal('test');
-      expect(cookieData.initial_foo).to.equal('bar');
       expect(cookieData.foo).to.equal('bar');
-
     });
 
-    it('should only set the specified cookie', function () {
-
+    it('should only set the specified cookie', () => {
       attrify({
         defaults: false,
-        params: ['foo']
+        params: ['foo'],
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_foo', 'foo');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
+      expect(cookieData).to.have.all.keys('referrer', 'foo');
+
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_foo).to.equal('bar');
       expect(cookieData.foo).to.equal('bar');
-
     });
 
-    it('should use the specified cookie prefix', function () {
-
+    it('should use the specified cookie prefix', () => {
       attrify({
         prefix: '_',
-        initialPrefix: 'init_',
-        lastPrefix: 'last_'
+        lastPrefix: 'last_',
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('_init_referrer', '_last_referrer',
-                                          '_init_utm_campaign', '_last_utm_campaign',
-                                          '_init_utm_medium', '_last_utm_medium',
-                                          '_init_utm_source', '_last_utm_source',
-                                          '_init_utm_term', '_last_utm_term',
-                                          '_init_utm_content', '_last_utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      /* eslint-disable no-underscore-dangle */
+      expect(cookieData).to.have.all.keys('_last_referrer',
+                                          '_last_utm_campaign',
+                                          '_last_utm_medium',
+                                          '_last_utm_source',
+                                          '_last_utm_term',
+                                          '_last_utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData._init_referrer).to.equal('https://www.google.com');
       expect(cookieData._last_referrer).to.equal('https://www.google.com');
-      expect(cookieData._init_utm_campaign).to.equal('test');
       expect(cookieData._last_utm_campaign).to.equal('test');
-      expect(cookieData._init_utm_medium).to.equal('test');
       expect(cookieData._last_utm_medium).to.equal('test');
-      expect(cookieData._init_utm_source).to.equal('test');
-      expect(cookieData._last_utm_source).to.equal('test');
-      expect(cookieData._init_utm_content).to.equal('test');
+      expect(cookieData._last_utm_source).to.equal('test');;
       expect(cookieData._last_utm_content).to.equal('test');
-      expect(cookieData._init_utm_term).to.equal('test');
       expect(cookieData._last_utm_term).to.equal('test');
-
+      /* eslint-enable no-underscore-dangle */
     });
 
-    it('should set cookies with the correct sub-domain', function () {
-
+    it('should set cookies with the correct sub-domain', () => {
       attrify({
-        domain: '.lukebussey.com'
+        domain: '.lukebussey.com',
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_utm_term', 'utm_term',
-                                          'initial_utm_content', 'utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_campaign).to.equal('test');
       expect(cookieData.utm_campaign).to.equal('test');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-      expect(cookieData.initial_utm_content).to.equal('test');
       expect(cookieData.utm_content).to.equal('test');
-      expect(cookieData.initial_utm_term).to.equal('test');
       expect(cookieData.utm_term).to.equal('test');
-
     });
 
-    it('should set cookies with the correct sub-domain', function () {
-
+    it('should set cookies with the correct sub-domain', () => {
       attrify({
-        domain: '.notlukebussey.com'
+        domain: '.notlukebussey.com',
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.not.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_utm_term', 'utm_term',
-                                          'initial_utm_content', 'utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      expect(cookieData).to.not.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
-
     });
 
-    it('should set cookies with the correct path', function () {
-
+    it('should set cookies with the correct path', () => {
       attrify({
-        path: '/path/'
+        path: '/path/',
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_utm_term', 'utm_term',
-                                          'initial_utm_content', 'utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_campaign).to.equal('test');
       expect(cookieData.utm_campaign).to.equal('test');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-      expect(cookieData.initial_utm_content).to.equal('test');
       expect(cookieData.utm_content).to.equal('test');
-      expect(cookieData.initial_utm_term).to.equal('test');
       expect(cookieData.utm_term).to.equal('test');
-
     });
 
-    it('should set cookies with the correct path', function () {
-
+    it('should set cookies with the correct path', () => {
       attrify({
-        path: '/different-path/'
+        path: '/different-path/',
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.not.have.all.keys('initial_referrer', 'referrer',
-                                              'initial_utm_campaign', 'utm_campaign',
-                                              'initial_utm_medium', 'utm_medium',
-                                              'initial_utm_source', 'utm_source',
-                                              'initial_utm_term', 'utm_term',
-                                              'initial_utm_content', 'utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      expect(cookieData).to.not.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
-
     });
 
-    it('should remove any previously set cookies', function () {
-
+    it('should remove any previously set cookies', () => {
       attrify();
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_utm_term', 'utm_term',
-                                          'initial_utm_content', 'utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_campaign).to.equal('test');
       expect(cookieData.utm_campaign).to.equal('test');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-      expect(cookieData.initial_utm_content).to.equal('test');
       expect(cookieData.utm_content).to.equal('test');
-      expect(cookieData.initial_utm_term).to.equal('test');
       expect(cookieData.utm_term).to.equal('test');
 
       window.location.href = '/path/?foo=bar&utm_campaign=test';
@@ -348,127 +346,118 @@ describe('attrify', function () {
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium',
-                                          'initial_utm_source',
-                                          'initial_utm_term',
-                                          'initial_utm_content');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_campaign');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_campaign).to.equal('test');
       expect(cookieData.utm_campaign).to.equal('test');
-      expect(cookieData.initial_utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
-      expect(cookieData.initial_utm_content).to.equal('test');
-      expect(cookieData.initial_utm_term).to.equal('test');
-
     });
-
   });
 
-  describe('with additional data', function () {
-
-    beforeEach(function () {
+  describe('with additional data', () => {
+    beforeEach(() => {
       window.location.href = '/path/?foo=bar&utm_campaign=test&utm_medium=test&utm_source=test&utm_term=test&utm_content=test';
     });
 
-    it('should only set the correct cookies', function () {
-
+    it('should only set the correct cookies', () => {
       attrify({
         data: {
-          baz: 'qux'
-        }
+          baz: 'qux',
+        },
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_campaign', 'utm_campaign',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_utm_term', 'utm_term',
-                                          'initial_utm_content', 'utm_content',
-                                          'initial_baz', 'baz');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content',
+                                              'initial_baz');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_campaign',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'utm_term',
+                                          'utm_content',
+                                          'baz');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_campaign).to.equal('test');
       expect(cookieData.utm_campaign).to.equal('test');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-      expect(cookieData.initial_utm_content).to.equal('test');
       expect(cookieData.utm_content).to.equal('test');
-      expect(cookieData.initial_utm_term).to.equal('test');
       expect(cookieData.utm_term).to.equal('test');
-      expect(cookieData.initial_baz).to.equal('qux');
       expect(cookieData.baz).to.equal('qux');
-
     });
 
-    it('should only set the specified cookies', function () {
-
+    it('should only set the specified cookies', () => {
       attrify({
         defaults: false,
         params: ['utm_source', 'utm_medium'],
         data: {
-          baz: 'qux'
-        }
+          baz: 'qux',
+        },
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_utm_medium', 'utm_medium',
-                                          'initial_utm_source', 'utm_source',
-                                          'initial_baz', 'baz');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content',
+                                              'initial_baz');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'utm_medium',
+                                          'utm_source',
+                                          'baz');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_utm_medium).to.equal('test');
       expect(cookieData.utm_medium).to.equal('test');
-      expect(cookieData.initial_utm_source).to.equal('test');
       expect(cookieData.utm_source).to.equal('test');
-      expect(cookieData.initial_baz).to.equal('qux');
       expect(cookieData.baz).to.equal('qux');
-
     });
 
-    it('should only set the specified cookie', function () {
-
+    it('should only set the specified cookie', () => {
       attrify({
         defaults: false,
         data: {
-          baz: 'qux'
-        }
+          baz: 'qux',
+        },
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_baz', 'baz');
+      expect(cookieData).to.not.have.all.keys('initial_baz');
+
+      expect(cookieData).to.have.all.keys('referrer','baz');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_baz).to.equal('qux');
       expect(cookieData.baz).to.equal('qux');
-
     });
 
-    it('should not set null, undefined or empty cookies', function () {
-
-      var qux;
+    it('should not set null, undefined or empty cookies', () => {
+      let qux;
 
       attrify({
         defaults: false,
@@ -478,30 +467,33 @@ describe('attrify', function () {
           wobble: '',
           wubble: 0,
           fibble: true,
-          fubble: false
-        }
+          fubble: false,
+        },
       });
 
       cookieData = cookie.parse(document.cookie);
 
-      expect(cookieData).to.have.all.keys('initial_referrer', 'referrer',
-                                          'initial_wubble', 'wubble',
-                                          'initial_fibble', 'fibble',
-                                          'initial_fubble', 'fubble');
+      expect(cookieData).to.not.have.all.keys('initial_referrer',
+                                              'initial_utm_campaign',
+                                              'initial_utm_medium',
+                                              'initial_utm_source',
+                                              'initial_utm_term',
+                                              'initial_utm_content',
+                                              'initial_wubble',
+                                              'initial_fibble',
+                                              'initial_fubble');
+
+      expect(cookieData).to.have.all.keys('referrer',
+                                          'wubble',
+                                          'fibble',
+                                          'fubble');
 
       expect(cookieData).to.not.have.any.keys('foo');
 
-      expect(cookieData.initial_referrer).to.equal('https://www.google.com');
       expect(cookieData.referrer).to.equal('https://www.google.com');
-      expect(cookieData.initial_wubble).to.equal('0');
       expect(cookieData.wubble).to.equal('0');
-      expect(cookieData.initial_fibble).to.equal('true');
       expect(cookieData.fibble).to.equal('true');
-      expect(cookieData.initial_fubble).to.equal('false');
       expect(cookieData.fubble).to.equal('false');
-
     });
-
   });
-
 });

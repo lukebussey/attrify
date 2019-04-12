@@ -1,22 +1,21 @@
 {
   "name": "@loganbussey/attrify",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Attrify saves a user's initial-and-last, referrer and campaign (utm) query string parameters as cookies. Initial values are saved for ever and last are persisted for the length of the users browsing session. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.",
-  "homepage": "https://github.com/lukebussey/attrify",
+  "homepage": "https://github.com/loganbussey/attrify",
   "repository": {
     "type": "git",
-    "url": "git://github.com/lukebussey/attrify.git"
+    "url": "git://github.com/loganbussey/attrify.git"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "src/index.js",
   "scripts": {
-    "prepublish": "npm run build && npm run minify",
-    "build": "browserify --standalone attrify index.js -o dist/attrify.js",
-    "watch": "watchify --standalone attrify index.js -o dist/attrify.js",
-    "minify": "uglifyjs dist/attrify.js -o dist/attrify.min.js",
-    "test": "jshint index.js && mocha"
+    "prepare": "babel src --out-dir dist --presets=@babel/preset-env",
+    "lint": "eslint src/index.js",
+    "test": "npm run lint && mocha --require esm"
   },
   "authors": [
-    "Luke Bussey <luke.bussey@gmail.com>"
+    "Luke Bussey <luke@loganbussey.com>"
   ],
   "keywords": [
     "campaign",
@@ -30,16 +29,19 @@
   "license": "MIT",
   "dependencies": {
     "cookie": "^0.3.1",
-    "deepmerge": "^1.3.0",
+    "deepmerge": "^3.2.0",
     "querystring": "^0.2.0"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
-    "chai": "^3.4.1",
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "esm": "^3.2.22",
     "jsdom": "^7.2.2",
-    "jshint": "^2.9.1",
-    "mocha": "^2.3.4",
-    "uglify-js": "^2.6.1",
-    "watchify": "^3.7.0"
+    "mocha": "^6.1.2"
   }
 }
