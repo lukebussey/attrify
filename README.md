@@ -70,15 +70,25 @@ Default `/`
 
 ## Examples
 
-### Save `gclid` AdWords ID in addition to default parameters
+### Save default parameters accessible from all sub-domains
+
+```js
+const cookieDomain = window.location.hostname.indexOf('domain.com') >= 0 ? '.domain.com' : null;
+
+attrify({
+  domain: cookieDomain
+});
 ```
+
+### Save `gclid` AdWords ID in addition to default parameters
+```js
 attrify({
   params: ['gclid']
 });
 ```
 
 ### Save only the `foo` parameter with an `_` prefix
-```
+```js
 attrify({
   prefix: '_',
   defaults: false,
@@ -87,7 +97,7 @@ attrify({
 ```
 
 ### Save `foo` value in addition to default parameters
-```
+```js
 attrify({
   data: {
     foo: 'bar'
