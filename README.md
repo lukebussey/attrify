@@ -1,8 +1,8 @@
 # Attrify for Marketing Attribution
 
-Attrify saves a user's initial-and-last, referrer and campaign (utm) query string parameters as cookies. Initial values are saved forever and last are persisted for the length of the users browsing session. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.
+Attrify saves a user’s last referrer and campaign (utm) query string parameters as session cookies. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.
 
-By default, only the `initial_referrer` `initial_utm_campaign`, `initial_utm_source`, `initial_utm_medium`, `initial_utm_content`, and `initial_utm_term`, `referrer` `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and `utm_term` are saved. Extra query string parameters can also be saved by passing them in via the `options.params` object. If the query string contains any of the parameters to be saved, a new session is assumed and previously set cookies will be overwritten. Initial value cookies are not overwritten at any time.
+By default, only the `referrer` `utm_campaign`, `utm_source`, `utm_medium`, `utm_content`, and `utm_term` are saved. Extra query string parameters can also be saved by passing them in via the `options.params` object. If the query string contains any of the parameters to be saved, a new session is assumed and previously set cookies will be overwritten. Initial value cookies can be set by enabling the `saveInitial` option and are not overwritten at any time.
 
 `attrify()` should be called on each page view and all pages of your site.
 
