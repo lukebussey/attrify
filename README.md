@@ -13,7 +13,7 @@ Attrify is a fork and improvement of my previous project [Last Campaign](https:/
 ## Installation & Usage
 
 ### NPM
-`$ npm install attrify --save`
+`$ npm i @loganbussey/attrify --save`
 
 ```js
 import attrify from 'attrify';
