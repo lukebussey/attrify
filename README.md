@@ -16,7 +16,7 @@ Attrify is a fork and improvement of my previous project [Last Campaign](https:/
 `$ npm i @loganbussey/attrify --save`
 
 ```js
-import attrify from 'attrify';
+import attrify from '@loganbussey/attrify';
 attrify();
 ```
 
