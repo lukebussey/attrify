@@ -28,20 +28,20 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "cookie": "^0.3.1",
-    "deepmerge": "^3.2.0",
+    "cookie": "^0.4.0",
+    "deepmerge": "^3.3.0",
     "querystring": "^0.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "esm": "^3.2.22",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.20.0",
+    "esm": "^3.2.25",
     "jsdom": "^7.2.2",
-    "mocha": "^6.1.2"
+    "mocha": "^6.2.2"
   }
 }
