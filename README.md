@@ -68,6 +68,18 @@ Cookie path.
 
 Default `/`
 
+### `sameSite` (String)
+
+Cookie SameSite attribute.
+
+Default `None`
+
+### `secure` (Boolean)
+
+Cookie secure attribute.
+
+Default `true`
+
 ## Examples
 
 ### Save default parameters accessible from all sub-domains

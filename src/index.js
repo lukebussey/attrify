@@ -36,6 +36,8 @@ const attribution = (opts) => {
     path: '/',
     domain: null,
     timeout: 30,
+    sameSite: 'none',
+    secure: true,
   };
 
   const pageQueryString = getQueryString();
@@ -62,6 +64,8 @@ const attribution = (opts) => {
   cookieOptions = {
     domain: options.domain,
     path: options.path,
+    sameSite: options.sameSite,
+    secure: options.secure,
   };
 
   // Set cookie expiration and advance expiration for existing cookies

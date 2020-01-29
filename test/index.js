@@ -7,7 +7,7 @@ let cookieData = {};
 
 beforeEach(() => {
   global.document = jsdom('', {
-    url: 'http://www.lukebussey.com/',
+    url: 'https://www.lukebussey.com/',
     referrer: 'https://www.google.com',
   });
   global.window = global.document.defaultView;
