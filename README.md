@@ -24,7 +24,7 @@ attrify();
 
 ### `timeout` (Number)
 
-Default session timeout in minutes. This should match the session timeout used in Google Analyutcs. Default `30`
+Default session timeout in minutes. This should match the session timeout used in Google Analytics. Default `30`
 
 Passing in `null` will disable the session timeout and revert to using a session cookie. E.g. `timeout: null`
 
