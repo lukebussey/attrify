@@ -1,4 +1,6 @@
 # Attrify for Marketing Attribution
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Floganbussey%2Fattrify.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Floganbussey%2Fattrify?ref=badge_shield)
+
 
 Attrify saves a user’s last referrer and campaign (utm) query string parameters as session cookies. The cookies can then be passed to your marketing automation system, CRM, or email marketing system at any time during the users session for enhanced marketing attribution.
 
@@ -127,3 +129,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Floganbussey%2Fattrify.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Floganbussey%2Fattrify?ref=badge_large)
